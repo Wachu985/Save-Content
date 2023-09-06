@@ -8,6 +8,9 @@ from pyrogram.errors.exceptions.bad_request_400 import PeerIdInvalid,InviteHashE
 from progress import progressddl,progressub
 from utils import get_filename_media
 from cfg import *
+import uvloop
+
+
 
 """===============Initializing the Bot================="""
 userbot = Client("userbot", API_ID, API_HASH,bot_token=BOT_TOKEN,session_string=SESSION)
@@ -107,6 +110,7 @@ async def get_mensage(client, message):
                 chat = '-100' + message.text.split('/')[-2]
                 msg_id = message.text.split('/')[-1]
                 msge = await userbot.get_messages(int(chat),int(msg_id))
+                print(msge)
                 if msge.media:
                     msg = await client.edit_message_text(msag.chat.id,msag.id,'**📥Intentando Descargar....**')
                     start = time()
@@ -121,10 +125,11 @@ async def get_mensage(client, message):
                     start = time()
                     filename = file.split('/')[-1]
                     if str(file).split('.')[-1] in ['jpg','png','gif','webp','jpeg']:
-                        msg = client.edit_message_text(msg.chat.id,msg.id,'**📤Subiendo a Telegram**')
+                        msg = await client.edit_message_text(msg.chat.id,msg.id,'**📤Subiendo a Telegram**')
                         await bot.send_photo(
                             message.chat.id,
                             file,
+                            caption=msge.caption,
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
@@ -133,6 +138,10 @@ async def get_mensage(client, message):
                         await bot.send_video(
                             message.chat.id,
                             file,
+                            caption=msge.caption,
+                            duration=msge.video.duration,
+                            thumb=msge.video.thumbs,
+                            ttl_seconds=10,
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
@@ -141,6 +150,7 @@ async def get_mensage(client, message):
                         await bot.send_document(
                             message.chat.id,
                             file,
+                            caption=msge.caption,
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
@@ -152,7 +162,7 @@ async def get_mensage(client, message):
             except ChannelInvalid:
                 await client.send_message(message.chat.id, '**Te Haz Unido al Canal❓**')
 
-        #============Download fron te Channel or Group and Upload to Telegram============
+        #============Download from te Channel or Group and Upload to Telegram============
         elif 'https://t.me/' in  message.text:
             save = './downloads/'+message.chat.username+'/'
             msag = await client.send_message(message.chat.id,'**🕥Procesando...**')
@@ -160,6 +170,7 @@ async def get_mensage(client, message):
                 chat =  message.text.split('/')[-2]
                 msg_id =  message.text.split('/')[-1]
                 msge = await userbot.get_messages(chat,int(msg_id))
+                print(msge)
                 if msge.media:
                     msg = await client.edit_message_text(msag.chat.id,msag.id,'**📥Intentando Descargar....**')
                     start = time()
@@ -178,6 +189,7 @@ async def get_mensage(client, message):
                         await bot.send_photo(
                             message.chat.id,
                             file,
+                            caption=msge.caption,
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
@@ -186,7 +198,9 @@ async def get_mensage(client, message):
                         await bot.send_video(
                             message.chat.id,
                             file,
+                            duration=msge.video.duration,
                             progress=progressub,
+                            caption=msge.caption,
                             progress_args=(msg,bot,filename,start)
                         )
                     else:
@@ -194,6 +208,7 @@ async def get_mensage(client, message):
                         await bot.send_document(
                             message.chat.id,
                             file,
+                            caption=msge.caption,
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
