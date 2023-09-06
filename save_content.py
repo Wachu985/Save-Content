@@ -110,7 +110,6 @@ async def get_mensage(client, message):
                 chat = '-100' + message.text.split('/')[-2]
                 msg_id = message.text.split('/')[-1]
                 msge = await userbot.get_messages(int(chat),int(msg_id))
-                print(msge)
                 if msge.media:
                     msg = await client.edit_message_text(msag.chat.id,msag.id,'**📥Intentando Descargar....**')
                     start = time()
@@ -170,7 +169,6 @@ async def get_mensage(client, message):
                 chat =  message.text.split('/')[-2]
                 msg_id =  message.text.split('/')[-1]
                 msge = await userbot.get_messages(chat,int(msg_id))
-                print(msge)
                 if msge.media:
                     msg = await client.edit_message_text(msag.chat.id,msag.id,'**📥Intentando Descargar....**')
                     start = time()
