@@ -11,6 +11,8 @@ from cfg import *
 import uvloop
 
 
+userthumb = {}
+
 
 """===============Initializing the Bot================="""
 userbot = Client("userbot", API_ID, API_HASH,bot_token=BOT_TOKEN,session_string=SESSION)
@@ -74,6 +76,20 @@ async def help(client, message):
 @bot.on_message(filters.private)
 async def get_message(client,message):
     await get_mensage(client,message)
+
+@bot.on_message(filters.command('set_thumb') & filters.reply)
+async def set_thumb(client,message):
+    await set_thumb_method(client,message)
+    
+
+async def set_thumb_method(client,message):
+    if(message.reply_to_message.media):
+        file = await bot.download_media(message.reply_to_message,file_name='./photos/')
+        global userthumb
+        userthumb[message.from_user.id] = file
+        await client.send_message(message.chat.id,'**✅ Miniatura Asignada**')
+    return
+    
     
 
 
@@ -150,6 +166,7 @@ async def get_mensage(client, message):
                             message.chat.id,
                             file,
                             caption=msge.caption,
+                            thumb = userthumb[message.from_user.id],
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
@@ -197,6 +214,7 @@ async def get_mensage(client, message):
                             message.chat.id,
                             file,
                             duration=msge.video.duration,
+                            thumb = userthumb[message.from_user.id],
                             progress=progressub,
                             caption=msge.caption,
                             progress_args=(msg,bot,filename,start)
@@ -207,6 +225,7 @@ async def get_mensage(client, message):
                             message.chat.id,
                             file,
                             caption=msge.caption,
+                            thumb = userthumb[message.from_user.id],
                             progress=progressub,
                             progress_args=(msg,bot,filename,start)
                         )
