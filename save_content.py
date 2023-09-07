@@ -72,14 +72,15 @@ async def help(client, message):
     await bot.send_message(message.chat.id,text,reply_markup=reply_botton)
 
 
+@bot.on_message(filters.command('set_thumb') & filters.reply)
+async def set_thumb(client,message):
+    await set_thumb_method(client,message)
+    
 """=============Method that Receives the Link from the User=============="""
 @bot.on_message(filters.private)
 async def get_message(client,message):
     await get_mensage(client,message)
 
-@bot.on_message(filters.command('set_thumb') & filters.reply)
-async def set_thumb(client,message):
-    await set_thumb_method(client,message)
     
 
 async def set_thumb_method(client,message):
@@ -150,25 +151,32 @@ async def get_mensage(client, message):
                         )
                     elif str(file).split('.')[-1] in ['mp4','mpg','mkv','webp','avi','flv']:
                         msg = await client.edit_message_text(msg.chat.id,msg.id,'**📤Subiendo a Telegram**')
+                        send_video_args = {
+                            'chat_id': message.chat.id,
+                            'video': file,
+                            'caption': msge.caption,
+                            'duration': msge.video.duration,
+                            'progress': progressub,
+                            'progress_args': (msg, bot, filename, start)
+                        }
+                        if userthumb.get(message.from_user.id):
+                            send_video_args['thumb'] = userthumb.get(message.from_user.id)
                         await bot.send_video(
-                            message.chat.id,
-                            file,
-                            caption=msge.caption,
-                            duration=msge.video.duration,
-                            thumb=msge.video.thumbs,
-                            ttl_seconds=10,
-                            progress=progressub,
-                            progress_args=(msg,bot,filename,start)
+                            **send_video_args
                         )
                     else:
                         msg = await client.edit_message_text(msg.chat.id,msg.id,'**📤Subiendo a Telegram**')
+                        send_document_args = {
+                            'chat_id': message.chat.id,
+                            'document': file,
+                            'caption': msge.caption,
+                            'progress': progressub,
+                            'progress_args': (msg, bot, filename, start)
+                        }
+                        if userthumb.get(message.from_user.id):
+                            send_document_args['thumb'] = userthumb.get(message.from_user.id)
                         await bot.send_document(
-                            message.chat.id,
-                            file,
-                            caption=msge.caption,
-                            thumb = userthumb[message.from_user.id],
-                            progress=progressub,
-                            progress_args=(msg,bot,filename,start)
+                            **send_document_args
                         )
                 elif not msge.media:
                     await client.send_message(
@@ -210,24 +218,32 @@ async def get_mensage(client, message):
                         )
                     elif str(file).split('.')[-1] in ['mp4','mpg','mkv','webp','avi','flv']:
                         msg = await client.edit_message_text(msg.chat.id,msg.id,'**📤Subiendo a Telegram**')
+                        send_video_args = {
+                            'chat_id': message.chat.id,
+                            'video': file,
+                            'caption': msge.caption,
+                            'duration': msge.video.duration,
+                            'progress': progressub,
+                            'progress_args': (msg, bot, filename, start)
+                        }
+                        if userthumb.get(message.from_user.id):
+                            send_video_args['thumb'] = userthumb.get(message.from_user.id)
                         await bot.send_video(
-                            message.chat.id,
-                            file,
-                            duration=msge.video.duration,
-                            thumb = userthumb[message.from_user.id],
-                            progress=progressub,
-                            caption=msge.caption,
-                            progress_args=(msg,bot,filename,start)
+                            **send_video_args
                         )
                     else:
                         msg = await client.edit_message_text(msg.chat.id,msg.id,'📤**Subiendo a Telegram**')
+                        send_document_args = {
+                            'chat_id': message.chat.id,
+                            'document': file,
+                            'caption': msge.caption,
+                            'progress': progressub,
+                            'progress_args': (msg, bot, filename, start)
+                        }
+                        if userthumb.get(message.from_user.id):
+                            send_document_args['thumb'] = userthumb.get(message.from_user.id)
                         await bot.send_document(
-                            message.chat.id,
-                            file,
-                            caption=msge.caption,
-                            thumb = userthumb[message.from_user.id],
-                            progress=progressub,
-                            progress_args=(msg,bot,filename,start)
+                            **send_document_args
                         )
                 elif not msge.media:
                     await client.send_message(message.chat.id, msge.text.markdown) 
