@@ -16,3 +16,7 @@ python3 save_content.py
 * To obtain the **BotToken** you must do it using the [BotFather](https://t.me/BotFather) in telegram.
 * To generate the **Session String** you can use this python script:
     - [Session String Generator](https://github.com/Wachu985/Session-String-Pyrogram)
+
+## Bot Commands
+- [/start]() - **It shows basic bot information, contacts and help.**
+- [/set_thumb]() - **Set thumbnail for uploaded files.**
